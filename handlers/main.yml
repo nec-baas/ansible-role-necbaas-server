@@ -1,0 +1,4 @@
+---
+# Tomcat を再起動する
+- name: restart_tomcat
+  service: name={{ baas_server_tomcat }} state=restarted

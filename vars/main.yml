@@ -1,0 +1,4 @@
+---
+baas_server_basename: "baas-server-{{ baas_server_version }}"
+baas_server_tarball: "{{ baas_server_basename }}.tar.gz"
+baas_server_download_url: "https://github.com/nec-baas/baas-server/releases/download/v{{ baas_server_version }}/{{ baas_server_tarball }}"

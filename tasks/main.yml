@@ -1,0 +1,51 @@
+---
+### モバイルバックエンド基盤 インストール
+
+- name: ensure download dir
+  file: path=/opt/download state=directory
+
+# モバイルバックエンド基盤をダウンロードする
+- name: download baas server
+  shell: wget -O /opt/download/{{ baas_server_tarball }} {{ baas_server_download_url }}
+  args:
+    creates: /opt/download/{{ baas_server_tarball }}
+
+#  get_url:
+#    url: "{{ baas_server_download_url }}"
+#    dest: "/opt/download/{{ baas_server_tarball }}"
+
+# tarball を展開
+- name: unarchive baas server
+  unarchive:
+    src: "/opt/download/{{ baas_server_tarball }}"
+    dest: /opt
+    copy: no
+    creates: "/opt/{{ baas_server_basename }}"
+
+- name: symlink baas_server
+  file: src="/opt/{{ baas_server_basename }}" dest=/opt/baas-server state=link force=yes
+
+# WAR ファイルをインストールする
+- name: install war files
+  shell: /bin/cp /opt/baas-server/server/*.war {{ baas_server_webapps_dir }}
+  args:
+    creates: "{{ baas_server_webapps_dir }}/api.war"
+  notify: restart_tomcat
+
+# ログディレクトリを作成
+- name: create log directory
+  file: path=/var/log/baas state=directory owner=tomcat group=tomcat mode=0755
+
+# 設定ファイルをインストール
+- name: create etc dir
+  file: path=/etc/baas state=directory
+
+- name: install baas property file
+  template: src=properties.xml.j2 dest=/etc/baas/development.xml owner=tomcat group=tomcat mode=0600
+  notify:
+    - restart_tomcat
+
+- name: install logback.properties
+  template: src=logback.properties.j2 dest=/etc/baas/logback.properties
+  notify:
+    - restart_tomcat

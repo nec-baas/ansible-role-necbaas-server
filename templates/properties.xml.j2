@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<!--
+プロパティ設定ファイル。
+
+本ファイルは、WAR ファイル内のBaaS設定(プロパティ)を上書きするためのものである。
+以下いずれかのディレクトリに production.xml, development.xml, test.xml の名称で配置する。
+複数置いた場合は、下のものが優先される。
+
+  1) /etc/baas/
+  2) c:/NEC/BaaS/etc/ (Windows)
+  3) ~/.baas/
+  4) [デプロイディレクトリ]/WEB-INF/classes/ (クラスパス)
+
+なお、Spring のプロファイル(production/development/test)の切り替えはここではできない。
+WARファイル内の web.xml ファイルを変更するか、
+JVM オプション -Dspring.profiles.active で起動時に指定する。
+
+logback の設定は、このファイルではなく logback.xml ファイルで行う。
+-->
+<properties>
+    <!-- APIサーバ ベースURI デフォルト設定 -->
+    <!-- 注: デベロッパーコンソール システム設定の値のほうが優先される -->
+    <entry key="api.baseUrl">{{ baas_server_api_base_uri }}</entry>
+
+    <!-- APIサーバ 内部向けベースURI デフォルト設定 -->
+    <!-- 省略時は api.baseUrl の値が使用される -->
+    <!-- 注: デベロッパーコンソール システム設定の値のほうが優先される -->
+    <entry key="api.internalBaseUrl">{{ baas_server_api_internal_base_uri }}</entry>
+
+    <!-- MongoDB 設定: デフォルト設定は mongo.properties -->
+    <entry key="mongo.servers">{{ baas_server_mongodb_servers }}</entry>
+    <entry key="mongo.username">{{ baas_server_mongodb_auth_user }}</entry>
+    <entry key="mongo.password">{{ baas_server_mongodb_auth_password }}</entry>
+
+    <!-- MongoDB ホスト当たり最大コネクション数 -->
+    <entry key="mongo.maxConnectionsPerHost">{{ baas_server_mongodb_max_conns }}</entry>
+
+    <!--
+        AMQP サーバ設定 (SSE Push/Cloud Functions で必要)。
+        amqp.{addrs,username,password,vhost} を設定する、amqp.uri を設定するか、いずれか選択。
+        両方設定した場合は前者(addrs,...)が優先される。
+    -->
+    <entry key="amqp.addrs">{{ baas_server_amqp_addrs }}</entry>
+    <entry key="amqp.username">{{ baas_server_amqp_username }}</entry>
+    <entry key="amqp.password">{{ baas_server_amqp_password }}</entry>
+    <entry key="amqp.vhost">{{ baas_server_amqp_vhost }}</entry>
+    <entry key="amqp.uri">{{ baas_server_amqp_uri }}</entry>
+
+    <!-- APIカウント対象外キー : サーバマネージャ側と設定をあわせること -->
+    <entry key="system.noChargeKey">{{ baas_server_system_no_charge_key }}</entry>
+
+</properties>
