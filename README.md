@@ -17,8 +17,8 @@ Installs API / Console server of NEC Mobile Backend Platform.
 
 ## Role Variables
 
-* ``baas_server_tomcat``: Tomcat service name (string, default: tomcat9)
-* ``baas_server_webapps_dir``: Tomcat webapps directory (string, default: /var/lib/tomcat9/webapps)
+* ``baas_server_tomcat``: Tomcat service name (string, default: tomcat)
+* ``baas_server_webapps_dir``: Tomcat webapps directory (string, default: /var/lib/tomcat/webapps)
 * ``baas_server_api_base_uri``: External URL of API server (Usually https://[FQDN]/api/) (string, default: https://localhost:8080/api/)
 * ``baas_server_api_internal_base_uri``: Internal Base URI of API server  (default: use ``baas_server_api_base_uri``)
 * ``baas_server_mongodb_servers``: MongoDB server url (string, default: localhost:27017)

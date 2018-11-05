@@ -3,10 +3,10 @@
 baas_server_version: 7.5.0
 
 # Tomcat サービス名
-baas_server_tomcat: tomcat9
+baas_server_tomcat: tomcat
 
 # Tomcat webapps ディレクトリ
-baas_server_webapps_dir: /var/lib/tomcat9/webapps
+baas_server_webapps_dir: /var/lib/tomcat/webapps
 
 # APIサーバの外部向けURL
 baas_server_api_base_uri: 'http://localhost:8080/api/'
