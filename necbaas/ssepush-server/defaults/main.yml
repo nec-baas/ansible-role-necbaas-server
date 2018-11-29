@@ -1,0 +1,38 @@
+---
+# SSEPush サーババージョン
+ssepush_version: 7.5.0
+
+# Tomcat サービス名
+ssepush_tomcat: tomcat
+
+# WebApps ディレクトリ
+ssepush_webapps_dir: /var/lib/tomcat/webapps/
+
+# AMQP URI
+ssepush_amqp_uri: "amqp://rabbitmq:rabbitmq@localhost:5672"
+
+# ハートビート間隔(秒)
+ssepush_heartbeat_interval_sec: 30
+
+# Hazelcast: listen ポート
+ssepush_hazelcast_port: 5701
+
+# Hazelcast: group password
+ssepush_hazelcast_group_password: "AiJ4nei8"
+
+# Hazelcast: multicast 有効設定 (文字列で指定すること!)
+ssepush_hazelcast_multicast_enabled: "false"
+
+# Hazelcast: multicast group address
+ssepush_hazelcast_multicast_group: "224.2.2.3"
+
+# Hazelcast: multicast UDP port
+ssepush_hazelcast_multicast_port: 54327
+
+# Hazelcast: tcp-ip 有効設定 (文字列で指定すること!)
+ssepush_hazelcast_tcpip_enabled: "false"
+
+# Hazelcast: tcp-ip メンバ(配列)
+ssepush_hazelcast_tcpip_members: []
+
+

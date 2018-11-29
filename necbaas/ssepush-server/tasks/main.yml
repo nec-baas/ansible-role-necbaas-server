@@ -1,0 +1,70 @@
+---
+### SSE Push サーバ インストール
+
+- name: ensure download dir
+  file: path=/opt/download state=directory
+
+# SSEPush Server をダウンロードする
+- name: download ssepush server
+  shell: wget -O /opt/download/{{ ssepush_tarball }} {{ ssepush_download_url }}
+  args:
+    creates: /opt/download/{{ ssepush_tarball }}
+
+#  get_url:
+#    url: "{{ ssepush_download_url }}"
+#    dest: "/opt/download/{{ ssepush_tarball }}"
+
+# tarball を展開
+- name: unarchive ssepush server
+  unarchive:
+    src: "/opt/download/{{ ssepush_tarball }}"
+    dest: /opt
+    copy: no
+    creates: "/opt/{{ ssepush_basename }}"
+
+- name: symlink ssepush server
+  file: src="/opt/{{ ssepush_basename }}" dest=/opt/ssepush-server state=link force=yes
+
+# 設定ファイルディレクトリを作成
+- name: Create ssepush directories
+  file:
+    path:  "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ ssepush_config_dir }}"
+    - "{{ ssepush_log_dir }}"
+
+# ディレクトリの権限設定
+- name: Set owners of ssepush directories
+  file:
+    path: "{{ item }}"
+    owner: tomcat
+    group: tomcat
+    mode:  0755
+    recurse: yes
+    state: directory
+  with_items:
+    - "{{ ssepush_log_dir }}"
+
+# config.xml ファイルを投入する
+- name: install config.xml
+  template: src=config.xml.j2 dest="{{ ssepush_config_dir }}/config.xml"
+  notify: restart_tomcat
+
+# hazelcastConfig.xml ファイルを投入する
+- name: install hazelcast config
+  template: src=hazelcastConfig.xml.j2 dest="{{ ssepush_config_dir }}/hazelcastConfig.xml"
+  notify: restart_tomcat
+
+# logback.properties ファイルを投入する
+- name: install logback.properties
+  template: src=logback.properties.j2 dest="{{ ssepush_config_dir }}/logback.properties"
+  notify: restart_tomcat
+
+# WAR ファイルをインストールする
+- name: install war files
+  shell: /bin/cp /opt/ssepush-server/ssepush.war {{ ssepush_webapps_dir }}
+  args:
+    creates: "{{ ssepush_webapps_dir }}/ssepush.war"
+  notify: restart_tomcat
+

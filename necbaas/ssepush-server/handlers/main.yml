@@ -1,0 +1,5 @@
+---
+# Tomcat を再起動する
+- name: restart_tomcat
+  service: name={{ ssepush_tomcat }} state=restarted
+

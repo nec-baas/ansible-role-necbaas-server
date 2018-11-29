@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.5.xsd"
+           xmlns="http://www.hazelcast.com/schema/config"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <map name="ssepush-ports">
+        <backup-count>0</backup-count>
+        <async-backup-count>3</async-backup-count>
+    </map>
+
+    <group>
+        <name>ssepush</name>
+        <password>{{ ssepush_hazelcast_group_password }}</password>
+    </group>
+
+    <network>
+        <reuse-address>true</reuse-address>
+        <port auto-increment="false">{{ ssepush_hazelcast_port }}</port>
+        <join>
+            <multicast enabled="{{ ssepush_hazelcast_multicast_enabled }}">
+                <multicast-group>{{ ssepush_hazelcast_multicast_group }}</multicast-group>
+                <multicast-port>{{ ssepush_hazelcast_multicast_port }}</multicast-port>
+                <multicast-time-to-live>32</multicast-time-to-live>
+                <multicast-timeout-seconds>10</multicast-timeout-seconds>
+            </multicast>
+
+            <tcp-ip enabled="{{ ssepush_hazelcast_tcpip_enabled }}">
+                {% for item in ssepush_hazelcast_tcpip_members -%}
+                <member>{{ item }}</member>
+                {% endfor -%}
+            </tcp-ip>
+
+            <aws enabled="false"/>
+
+        </join>
+    </network>
+
+    <properties>
+        <property name="hazelcast.logging.type">slf4j</property>
+    </properties>
+</hazelcast>
