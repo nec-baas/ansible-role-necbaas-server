@@ -18,16 +18,16 @@
 - name: unarchive baas server
   unarchive:
     src: "/opt/download/{{ baas_server_tarball }}"
-    dest: /opt
+    dest: /opt/download
     copy: no
-    creates: "/opt/{{ baas_server_basename }}"
+    creates: "/opt/download/{{ baas_server_basename }}"
 
 - name: symlink baas_server
-  file: src="/opt/{{ baas_server_basename }}" dest=/opt/baas-server state=link force=yes
+  file: src="/opt/download/{{ baas_server_basename }}" dest="{{ baas_server_remote_dir }}" state=link force=yes
 
 # WAR ファイルをインストールする
 - name: install war files
-  shell: /bin/cp /opt/baas-server/server/*.war {{ baas_server_webapps_dir }}
+  shell: /bin/cp {{ baas_server_remote_dir }}/server/*.war {{ baas_server_webapps_dir }}
   args:
     creates: "{{ baas_server_webapps_dir }}/api.war"
   notify: restart_tomcat

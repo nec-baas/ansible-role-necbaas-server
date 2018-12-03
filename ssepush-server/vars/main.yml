@@ -10,3 +10,5 @@ ssepush_basename: "ssepush-server-{{ ssepush_version }}"
 ssepush_tarball: "{{ ssepush_basename }}.tar.gz"
 ssepush_download_url: "https://github.com/nec-baas/ssepush-server/releases/download/v{{ ssepush_version }}/{{ ssepush_tarball }}"
 
+# remote download directory
+ssepush_remote_dir: /opt/download/ssepush-server

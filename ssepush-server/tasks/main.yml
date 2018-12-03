@@ -18,12 +18,12 @@
 - name: unarchive ssepush server
   unarchive:
     src: "/opt/download/{{ ssepush_tarball }}"
-    dest: /opt
+    dest: /opt/download
     copy: no
-    creates: "/opt/{{ ssepush_basename }}"
+    creates: "/opt/download/{{ ssepush_basename }}"
 
 - name: symlink ssepush server
-  file: src="/opt/{{ ssepush_basename }}" dest=/opt/ssepush-server state=link force=yes
+  file: src="/opt/download/{{ ssepush_basename }}" dest="{{ ssepush_remote_dir }}" state=link force=yes
 
 # 設定ファイルディレクトリを作成
 - name: Create ssepush directories
@@ -63,7 +63,7 @@
 
 # WAR ファイルをインストールする
 - name: install war files
-  shell: /bin/cp /opt/ssepush-server/ssepush.war {{ ssepush_webapps_dir }}
+  shell: /bin/cp {{ ssepush_remote_dir }}/ssepush.war {{ ssepush_webapps_dir }}
   args:
     creates: "{{ ssepush_webapps_dir }}/ssepush.war"
   notify: restart_tomcat
