@@ -1,0 +1,12 @@
+[Unit]
+Description=Cloud Functions Server Manager
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java -jar {{ cloudfn_bin_dir }}/cloudfn-server-manager.jar {{ cloudfn_etc_dir }}/cloudfn-server-manager-config.yaml
+User={{ cloudfn_user }}
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

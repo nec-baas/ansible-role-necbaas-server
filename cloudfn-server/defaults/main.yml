@@ -1,0 +1,31 @@
+---
+
+# Cloud Functions サーババージョン
+cloudfn_version: 7.5.0
+
+# Cloud Functionの起動タイプ(docker: Dockerを使用する。direct: Dockerを使用しない)
+cloudfn_system_type: direct
+
+# AMQP URI
+cloudfn_amqp_uri: amqp://rabbitmq:rabbitmq@localhost:5672
+
+# Node.js Spec 値
+cloudfn_spec_node: node
+
+# Java Spec 値
+cloudfn_spec_java: java
+
+# 課金（APIカウント）を迂回するためのキー
+cloudfn_system_no_charge_key: tC0br8ciFAZmYdUHfS1JeJy4c
+
+#########################################################
+# Docker 関連設定
+
+# Docker URI
+cloudfn_docker_uri: "unix:///var/run/docker.sock"
+
+# node server Docker イメージ
+cloudfn_docker_node_repoTag: necbaas/node-logic-server:8
+
+# java server Docker イメージ
+cloudfn_docker_java_repoTag: necbaas/java-logic-server:11

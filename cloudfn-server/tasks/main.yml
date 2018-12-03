@@ -1,0 +1,156 @@
+---
+### Cloudfn サーバ インストール
+
+- name: ensure download dir
+  file: path=/opt/download state=directory
+
+# Cloudfn サーバ をダウンロードする
+- name: download cloudfn server
+  shell: wget -O /opt/download/{{ cloudfn_tarball }} {{ cloudfn_download_url }}
+  args:
+    creates: "/opt/download/{{ cloudfn_tarball }}"
+
+#  get_url:
+#    url: "{{ cloudfn_download_url }}"
+#    dest: "/opt/download/{{ cloudfn_tarball }}"
+
+# tarball を展開
+- name: unarchive cloudfn server
+  unarchive:
+    src: "/opt/download/{{ cloudfn_tarball }}"
+    dest: /opt/download
+    copy: no
+    creates: "/opt/download/{{ cloudfn_basename }}"
+
+- name: symlink cloudfn server
+  file:
+    src: "/opt/download/{{ cloudfn_basename }}"
+    dest: "{{ cloudfn_remote_dir }}"
+    state: link
+    force: yes
+
+# ディレクトリの作成
+- name: Create cloudfn directories
+  file:
+    path:  "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ cloudfn_usercode_dir }}"
+    - "{{ cloudfn_logs_dir }}"
+    - "{{ cloudfn_bin_dir }}"
+    - "{{ cloudfn_etc_dir }}"
+    - "{{ cloudfn_node_server_dir }}"
+    - "{{ cloudfn_java_server_dir }}"
+
+# Java logic serverのパッケージの転送
+- name: Copy Java logic server package to target
+  copy:
+    src: "{{ cloudfn_remote_dir }}/java/{{ cloudfn_java_server_package_name }}"
+    dest: "{{ cloudfn_java_server_dir }}"
+    remote_src: yes
+
+# node logic serverのパッケージの転送
+- name: Copy node logic server package to target
+  copy:
+    src: "{{ cloudfn_remote_dir }}/node/{{ cloudfn_node_server_package_name }}"
+    dest: "{{ cloudfn_node_server_dir }}"
+    remote_src: yes
+  register: copy_node_logic_server
+
+# node logic server 更新処理（古い展開済のパッケージの削除と新しいバケットの展開）
+- name: Remove unarchived old package and unarchive new package
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ cloudfn_node_server_dir }}"
+  with_items: 
+    - "ls | grep -v -E {{ cloudfn_node_server_package_name }} | xargs rm -rf"
+    - "tar zxvf {{ cloudfn_node_server_package_name }}"
+  when: copy_node_logic_server.changed
+
+# サーバマネージャの実行ファイルの転送
+- name: Send server manager package to target
+  copy:
+    src: "{{ cloudfn_remote_dir }}/server-manager/bin/{{ cloudfn_server_manager_bin_file }}"
+    dest: "{{ cloudfn_bin_dir }}"
+    remote_src: yes
+
+# ユーザの作成
+- name: Create cloudfn user
+  user:
+    name: "{{ cloudfn_user }}"
+    shell:  /bin/false
+    createhome: no
+
+# ディレクトリの権限の一括設定
+- name: Set owners of directories
+  file:
+    path: "{{ item }}"
+    owner: "{{ cloudfn_user }}"
+    group: "{{ cloudfn_user }}"
+    mode:  0755
+    recurse: yes
+    state: directory
+  with_items:
+    - "{{ cloudfn_var_dir }}"
+    - "{{ cloudfn_dir }}"
+    - "{{ cloudfn_logs_dir }}"
+
+- block:
+  # docker グループに追加
+  - name: Add users to docker group
+    user:
+      name: "{{ cloudfn_user }}"
+      groups: docker
+      append: yes
+
+  # Docker イメージのインストール(Node.js)
+  - name: Install Docker image for Node.js
+    include: install-docker-image.yml
+    vars:
+      repo_tag: "{{ cloudfn_docker_node_repoTag }}"
+
+  # Docker イメージのインストール(Java)
+  - name: Install Docker image for Java
+    include: install-docker-image.yml
+    vars:
+      repo_tag: "{{ cloudfn_docker_java_repoTag }}"
+
+  when: cloudfn_system_type == "docker"
+
+# systemdによるサービス設定(Centos7/RHEL7以上)
+- name: Create server manager service file
+  template:
+    src:   cloudfn-server-manager.service.j2
+    dest:  /usr/lib/systemd/system/cloudfn-server-manager.service
+    owner: root
+    group: root
+    mode:  0644
+  notify:
+    - reload_systemd
+    - restart_server-manager
+
+# サーバマネージャの設定ファイルの転送
+- name: Send config.yaml to target
+  template:
+    src:   cloudfn-server-manager-config.yaml.j2
+    dest:  "{{ cloudfn_etc_dir }}/cloudfn-server-manager-config.yaml"
+  notify:
+  - reload_systemd
+  - restart_server-manager
+
+# サーバマネージャ logback property ファイルの転送
+- name: Install cloudfn-server-manager-logback.properties
+  template:
+    src: cloudfn-server-manager-logback.properties.j2
+    dest: "{{ cloudfn_etc_dir }}/cloudfn-server-manager-logback.properties"
+  notify:
+  - reload_systemd
+  - restart_server-manager
+
+# サーバマネージャの有効化
+- name: Start server namanger
+  service:
+    name:    cloudfn-server-manager
+    state:   started
+    enabled: yes
+

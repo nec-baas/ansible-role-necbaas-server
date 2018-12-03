@@ -1,0 +1,8 @@
+---
+- name: reload_systemd
+  command: systemctl daemon-reload
+  when: ansible_os_family == "RedHat"
+
+- name: restart_server-manager
+  service: name=cloudfn-server-manager state=restarted
+

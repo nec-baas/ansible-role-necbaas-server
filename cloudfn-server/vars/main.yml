@@ -1,0 +1,47 @@
+---
+cloudfn_basename: "cloudfn-servers-{{ cloudfn_version }}"
+cloudfn_tarball: "{{ cloudfn_basename }}.tar.gz"
+cloudfn_download_url: "https://github.com/nec-baas/cloudfn-server/releases/download/v{{ cloudfn_version }}/{{ cloudfn_tarball }}"
+
+# Cloud Functions システムディレクトリ
+cloudfn_dir: /opt/cloudfn
+
+# ユーザコード等の格納先
+cloudfn_var_dir: /var/cloudfn
+
+# ログの格納先
+cloudfn_logs_dir: /var/log/cloudfn
+
+# 設定ファイル格納先
+cloudfn_etc_dir: /etc/baas
+
+# コンテナマネジャーの実行ユーザ
+cloudfn_user: cloudfn
+
+# コンテナマネジャーの実行ファイル格納先
+cloudfn_bin_dir: "{{ cloudfn_dir }}/bin"
+
+# ユーザコードの格納先
+cloudfn_usercode_dir: "{{ cloudfn_var_dir }}/usercode"
+
+# Nodeサーバの実行ファイルの格納先
+cloudfn_node_server_dir: "{{ cloudfn_dir }}/node-server"
+
+# Javaサーバの実行ファイルの格納先
+cloudfn_java_server_dir: "{{ cloudfn_dir }}/java-server"
+
+# サーバマネージャの実行ファイル
+cloudfn_server_manager_bin_file: cloudfn-server-manager.jar
+
+# Node Logic Serverのパッケージファイル名
+cloudfn_node_server_package_name: "cloudfn-node-server-{{ cloudfn_version }}.tgz"
+
+# Java Logic Server のパッケージファイル名
+cloudfn_java_server_package_name: cloudfn-java-server.jar
+
+# Docker コンテナ内で実行するコマンドライン
+cloudfn_docker_node_cmd: node /opt/emitter/bin/server.js
+cloudfn_docker_java_cmd: java -jar /opt/emitter/cloudfn-java-server.jar
+
+# remote download directory
+cloudfn_remote_dir: /opt/download/cloudfn-servers

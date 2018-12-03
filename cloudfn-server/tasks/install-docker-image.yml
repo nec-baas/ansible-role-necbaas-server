@@ -1,0 +1,24 @@
+---
+# install docker-py
+- name: install docker-py
+  pip: name=docker state=present
+
+# Docker image の取得
+- name: pull an image
+  docker_image: name="{{ repo_tag }}"
+  register: pull_image
+
+- block:
+  # Dockerイメージの更新があった場合、関連コンテナを全て停止
+  - name: Stop all containers
+    shell: docker stop $(docker ps -a -q -f ancestor={{ repo_tag }})
+    register: stop_result
+    failed_when: stop_result.rc not in [0, 1]
+
+  # Dockerイメージ更新があった場合、関連コンテナを全て削除
+  - name: Remove all containers
+    shell: docker rm $(docker ps -a -q -f ancestor={{ repo_tag }})
+    register: remove_containers_result
+    failed_when: remove_containers_result.rc not in [0, 1]
+
+  when: pull_image.changed

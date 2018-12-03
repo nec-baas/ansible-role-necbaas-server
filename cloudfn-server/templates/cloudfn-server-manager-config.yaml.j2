@@ -1,0 +1,51 @@
+system:
+  type: {{ cloudfn_system_type }}
+
+  # 課金（APIカウント）を迂回するためのキー
+  noChargeKey: {{ cloudfn_system_no_charge_key }}
+
+usercode:
+  # ユーザコードを展開するベースディレクトリ
+  host_root_dir: {{ cloudfn_usercode_dir }}
+
+amqp:
+  # AMQP URI
+  uri: {{ cloudfn_amqp_uri }}
+
+docker:
+  # Docker URI
+  uri: {{ cloudfn_docker_uri }}
+
+spec:
+{% if cloudfn_system_type == "docker" %}
+  {{ cloudfn_spec_node }}:
+    # Docker イメージの repository/tag 名
+    repoTag: {{ cloudfn_docker_node_repoTag }}
+
+    # Docker コンテナ内で実行するコマンドライン
+    cmd: {{ cloudfn_docker_node_cmd }}
+
+    # ロジックサーバが格納されたディレクトリ
+    volume: {{ cloudfn_node_server_dir }}/package
+
+  {{ cloudfn_spec_java }}:
+    # Docker イメージの repository/tag 名
+    repoTag: {{ cloudfn_docker_java_repoTag }}
+
+    # Docker コンテナ内で実行するコマンドライン
+    cmd: {{ cloudfn_docker_java_cmd }}
+
+    # ロジックサーバが格納されたディレクトリ
+    volume: {{ cloudfn_java_server_dir }}
+
+{% elif cloudfn_system_type == "direct" %}
+  {{ cloudfn_spec_node }}:
+
+    # ロジックサーバコマンドライン
+    cmd: node {{ cloudfn_node_server_dir }}/package/bin/server.js
+
+  {{ cloudfn_spec_java }}:
+    # ロジックサーバコマンドライン
+    cmd: java -jar {{ cloudfn_java_server_dir }}/cloudfn-java-server.jar
+
+{% endif %}
