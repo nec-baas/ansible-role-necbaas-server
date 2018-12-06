@@ -33,7 +33,7 @@ Installs Cloud Functions of NEC Mobile Backend Platform.
 
 ## Variables
 
-* ``cloudfn_system_type``: Cloud Functions system type:(docker: Use Docker. direct: Dockerless) (string, default: direct)
+* ``cloudfn_system_type``: Cloud Functions system type:(docker: Use Docker. direct: Dockerless) (string, default: docker)
 * ``cloudfn_amqp_uri``: AMQP URI (string, default: amqp://rabbitmq:rabbitmq@localhost:5672)
 * ``cloudfn_system_no_charge_key``: No charge key (string)
 
