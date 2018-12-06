@@ -18,34 +18,46 @@ docker:
 
 spec:
 {% if cloudfn_system_type == "docker" %}
-  {{ cloudfn_spec_node }}:
-    # Docker イメージの repository/tag 名
-    repoTag: {{ cloudfn_docker_node_repoTag }}
-
-    # Docker コンテナ内で実行するコマンドライン
+  node:
+    repoTag: necbaas/node-logic-server:8
     cmd: {{ cloudfn_docker_node_cmd }}
-
-    # ロジックサーバが格納されたディレクトリ
     volume: {{ cloudfn_node_server_dir }}/package
 
-  {{ cloudfn_spec_java }}:
-    # Docker イメージの repository/tag 名
-    repoTag: {{ cloudfn_docker_java_repoTag }}
+  node6:
+    repoTag: necbaas/node-logic-server:6
+    cmd: {{ cloudfn_docker_node_cmd }}
+    volume: {{ cloudfn_node_server_dir }}/package
 
-    # Docker コンテナ内で実行するコマンドライン
+  node8:
+    repoTag: necbaas/node-logic-server:8
+    cmd: {{ cloudfn_docker_node_cmd }}
+    volume: {{ cloudfn_node_server_dir }}/package
+
+  node10:
+    repoTag: necbaas/node-logic-server:10
+    cmd: {{ cloudfn_docker_node_cmd }}
+    volume: {{ cloudfn_node_server_dir }}/package
+
+  java:
+    repoTag: necbaas/java-logic-server:8
     cmd: {{ cloudfn_docker_java_cmd }}
+    volume: {{ cloudfn_java_server_dir }}
 
-    # ロジックサーバが格納されたディレクトリ
+  java8:
+    repoTag: necbaas/java-logic-server:8
+    cmd: {{ cloudfn_docker_java_cmd }}
+    volume: {{ cloudfn_java_server_dir }}
+
+  java11:
+    repoTag: necbaas/java-logic-server:11
+    cmd: {{ cloudfn_docker_java_cmd }}
     volume: {{ cloudfn_java_server_dir }}
 
 {% elif cloudfn_system_type == "direct" %}
-  {{ cloudfn_spec_node }}:
-
-    # ロジックサーバコマンドライン
+  node:
     cmd: node {{ cloudfn_node_server_dir }}/package/bin/server.js
 
-  {{ cloudfn_spec_java }}:
-    # ロジックサーバコマンドライン
+  java:
     cmd: java -jar {{ cloudfn_java_server_dir }}/cloudfn-java-server.jar
 
 {% endif %}

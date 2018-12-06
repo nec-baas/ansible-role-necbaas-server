@@ -57,8 +57,8 @@
     remote_src: yes
   register: copy_node_logic_server
 
-# node logic server 更新処理（古い展開済のパッケージの削除と新しいバケットの展開）
-- name: Remove unarchived old package and unarchive new package
+# node logic server 更新処理（古い展開済のパッケージの削除と新しいパッケージの展開）
+- name: Remove old package dir and extract new package
   shell: "{{ item }}"
   args:
     chdir: "{{ cloudfn_node_server_dir }}"
@@ -103,21 +103,9 @@
       groups: docker
       append: yes
 
-  # Docker イメージのインストール(Node.js)
-  - name: Install Docker image for Node.js
-    include: install-docker-image.yml
-    vars:
-      repo_tag: "{{ cloudfn_docker_node_repoTag }}"
-
-  # Docker イメージのインストール(Java)
-  - name: Install Docker image for Java
-    include: install-docker-image.yml
-    vars:
-      repo_tag: "{{ cloudfn_docker_java_repoTag }}"
-
   when: cloudfn_system_type == "docker"
 
-# systemdによるサービス設定(Centos7/RHEL7以上)
+# systemdによるサービス設定
 - name: Create server manager service file
   template:
     src:   cloudfn-server-manager.service.j2
