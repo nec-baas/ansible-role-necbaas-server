@@ -25,7 +25,7 @@
 - name: symlink cloudfn server
   file:
     src: "/opt/download/{{ cloudfn_basename }}"
-    dest: "{{ cloudfn_remote_dir }}"
+    dest: "{{ cloudfn_artifact_dir }}"
     state: link
     force: yes
 
@@ -42,22 +42,22 @@
     - "{{ cloudfn_node_server_dir }}"
     - "{{ cloudfn_java_server_dir }}"
 
-# Java logic serverのパッケージの転送
+# Java logic server のインストール
 - name: Copy Java logic server package to target
   copy:
-    src: "{{ cloudfn_remote_dir }}/java/{{ cloudfn_java_server_package_name }}"
+    src: "{{ cloudfn_artifact_dir }}/java/{{ cloudfn_java_server_package_name }}"
     dest: "{{ cloudfn_java_server_dir }}"
     remote_src: yes
 
-# node logic serverのパッケージの転送
+# Node logic server のパッケージのコピー
 - name: Copy node logic server package to target
   copy:
-    src: "{{ cloudfn_remote_dir }}/node/{{ cloudfn_node_server_package_name }}"
+    src: "{{ cloudfn_artifact_dir }}/node/{{ cloudfn_node_server_package_name }}"
     dest: "{{ cloudfn_node_server_dir }}"
     remote_src: yes
   register: copy_node_logic_server
 
-# node logic server 更新処理（古い展開済のパッケージの削除と新しいパッケージの展開）
+# Node logic server 更新処理（古い展開済のパッケージの削除と新しいパッケージの展開）
 - name: Remove old package dir and extract new package
   shell: "{{ item }}"
   args:
@@ -67,10 +67,10 @@
     - "tar zxvf {{ cloudfn_node_server_package_name }}"
   when: copy_node_logic_server.changed
 
-# サーバマネージャの実行ファイルの転送
-- name: Send server manager package to target
+# サーバマネージャの実行ファイルのインストール
+- name: Install server manager package
   copy:
-    src: "{{ cloudfn_remote_dir }}/server-manager/bin/{{ cloudfn_server_manager_bin_file }}"
+    src: "{{ cloudfn_artifact_dir }}/server-manager/bin/{{ cloudfn_server_manager_bin_file }}"
     dest: "{{ cloudfn_bin_dir }}"
     remote_src: yes
 

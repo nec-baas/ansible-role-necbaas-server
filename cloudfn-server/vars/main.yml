@@ -43,5 +43,5 @@ cloudfn_java_server_package_name: cloudfn-java-server.jar
 cloudfn_docker_node_cmd: node /opt/emitter/bin/server.js
 cloudfn_docker_java_cmd: java -jar /opt/emitter/cloudfn-java-server.jar
 
-# remote download directory
-cloudfn_remote_dir: /opt/download/cloudfn-servers
+# Unarchived artifact directory
+cloudfn_artifact_dir: /opt/download/cloudfn-servers
