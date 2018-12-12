@@ -6,7 +6,7 @@
 
 # SSEPush Server をダウンロードする
 - name: download ssepush server
-  shell: wget -O /opt/download/{{ ssepush_tarball }} {{ ssepush_download_url }}
+  shell: aria2c -x10 --dir=/opt/download/ {{ ssepush_download_url }}
   args:
     creates: /opt/download/{{ ssepush_tarball }}
 

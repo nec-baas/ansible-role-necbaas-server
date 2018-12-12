@@ -6,7 +6,7 @@
 
 # モバイルバックエンド基盤をダウンロードする
 - name: download baas server
-  shell: wget -O /opt/download/{{ baas_server_tarball }} {{ baas_server_download_url }}
+  shell: aria2c -x10 --dir=/opt/download/ {{ baas_server_download_url }}
   args:
     creates: /opt/download/{{ baas_server_tarball }}
 

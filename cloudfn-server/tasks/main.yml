@@ -6,7 +6,7 @@
 
 # Cloudfn サーバ をダウンロードする
 - name: download cloudfn server
-  shell: wget -O /opt/download/{{ cloudfn_tarball }} {{ cloudfn_download_url }}
+  shell: aria2c -x10 --dir=/opt/download/ {{ cloudfn_download_url }}
   args:
     creates: "/opt/download/{{ cloudfn_tarball }}"
 
