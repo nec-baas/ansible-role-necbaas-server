@@ -1,6 +1,6 @@
 ---
 # BaaS サーババージョン
-baas_server_version: 7.5.0
+baas_server_version: 7.5.1
 
 # Tomcat サービス名
 baas_server_tomcat: tomcat

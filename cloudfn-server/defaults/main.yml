@@ -1,7 +1,7 @@
 ---
 
 # Cloud Functions サーババージョン
-cloudfn_version: 7.5.0
+cloudfn_version: 7.5.1
 
 # Cloud Functionの起動タイプ(docker: Dockerを使用する。direct: Dockerを使用しない)
 cloudfn_system_type: docker
