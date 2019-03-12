@@ -32,6 +32,10 @@
     creates: "{{ baas_server_webapps_dir }}/api.war"
   notify: restart_tomcat
 
+# 管理ツール スクリプトをインストール
+- name: install admin script
+  template: src=baas-admin.j2 dest=/usr/sbin/baas-admin mode=0700 owner=root
+
 # ログディレクトリを作成
 - name: create log directory
   file: path=/var/log/baas state=directory owner=tomcat group=tomcat mode=0755
