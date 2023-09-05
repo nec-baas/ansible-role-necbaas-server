@@ -2,7 +2,9 @@
 ### SSE Push サーバ インストール
 
 - name: ensure download dir
-  file: path=/opt/download state=directory
+  file:
+    path: /opt/download
+    state: directory
 
 # SSEPush Server をダウンロードする
 - name: download ssepush server
@@ -23,7 +25,11 @@
     creates: "/opt/download/{{ ssepush_basename }}"
 
 - name: symlink ssepush server
-  file: src="/opt/download/{{ ssepush_basename }}" dest="{{ ssepush_remote_dir }}" state=link force=yes
+  file:
+    src: "/opt/download/{{ ssepush_basename }}"
+    dest: "{{ ssepush_remote_dir }}"
+    state: link
+    force: yes
 
 # 設定ファイルディレクトリを作成
 - name: Create ssepush directories
@@ -48,17 +54,23 @@
 
 # config.xml ファイルを投入する
 - name: install config.xml
-  template: src=config.xml.j2 dest="{{ ssepush_config_dir }}/config.xml"
+  template:
+    src: config.xml.j2
+    dest: "{{ ssepush_config_dir }}/config.xml"
   notify: restart_tomcat
 
 # hazelcastConfig.xml ファイルを投入する
 - name: install hazelcast config
-  template: src=hazelcastConfig.xml.j2 dest="{{ ssepush_config_dir }}/hazelcastConfig.xml"
+  template:
+    src: hazelcastConfig.xml.j2
+    dest: "{{ ssepush_config_dir }}/hazelcastConfig.xml"
   notify: restart_tomcat
 
 # logback.properties ファイルを投入する
 - name: install logback.properties
-  template: src=logback.properties.j2 dest="{{ ssepush_config_dir }}/logback.properties"
+  template:
+    src: logback.properties.j2
+    dest: "{{ ssepush_config_dir }}/logback.properties"
   notify: restart_tomcat
 
 # WAR ファイルをインストールする

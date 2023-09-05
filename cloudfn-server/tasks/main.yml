@@ -2,7 +2,9 @@
 ### Cloudfn サーバ インストール
 
 - name: ensure download dir
-  file: path=/opt/download state=directory
+  file:
+    path: /opt/download
+    state: directory
 
 # Cloudfn サーバ をダウンロードする
 - name: download cloudfn server
