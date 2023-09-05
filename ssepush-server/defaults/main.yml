@@ -1,6 +1,6 @@
 ---
 # SSEPush サーババージョン
-ssepush_version: 7.5.0
+ssepush_version: 7.5.1
 
 # Tomcat サービス名
 ssepush_tomcat: tomcat
